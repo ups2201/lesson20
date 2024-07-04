@@ -1,13 +1,18 @@
-import js from "@eslint/js";
-import eslintConfigPrettier from "eslint-config-prettier";
+import globals from "globals";
+import tseslint from "typescript-eslint";
+
+import path from "path";
+import { fileURLToPath } from "url";
+import { FlatCompat } from "@eslint/eslintrc";
+import pluginJs from "@eslint/js";
+
+// mimic CommonJS variables -- not needed if using CommonJS
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const compat = new FlatCompat({baseDirectory: __dirname, recommendedConfig: pluginJs.configs.recommended});
 
 export default [
-  js.configs.recommended,
-  eslintConfigPrettier,
-  {
-    rules: {
-      "no-unused-vars": "warn",
-      "no-undef": "warn",
-    },
-  },
+  {languageOptions: { globals: globals.browser }},
+  ...compat.extends("standard-with-typescript"),
+  ...tseslint.configs.recommended,
 ];
