@@ -1,15 +1,15 @@
 import {Cell, Status} from "./types/Cell";
 
 export interface IGameField {
-    getState(): number[][];
+    getState(): Cell[][];
     toggleCellState(x: number, y: number);
     nextGeneration();
     setSize(width: number, height: number);
 }
 
 export class GameField implements IGameField {
-    private width: number;
-    private height: number;
+    width: number;
+    height: number;
     state: Cell[][];
 
     constructor(width: number = 0, height: number = 0) {
@@ -25,13 +25,13 @@ export class GameField implements IGameField {
         }
     }
 
-    getState(): number[][] {
+    getState(): Cell[][] {
         const gameField = [[]];
 
         for (let i = 0; i < this.height; i++) {
             gameField[i] = [];
             for (let j = 0; j < this.width; j++) {
-                gameField[i][j] = this.state[i][j].getStatus().valueOf();
+                gameField[i][j] = this.state[i][j];
             }
         }
 
@@ -39,6 +39,8 @@ export class GameField implements IGameField {
     }
 
     nextGeneration() {
+
+        const newGenerationField = new GameField(this.width, this.height);
         for (let i = 0; i < this.height; i++) {
             for (let j = 0; j < this.width; j++) {
                 const cell = this.state[i][j];
@@ -49,17 +51,19 @@ export class GameField implements IGameField {
                     .filter(cell => cell.getStatus() === Status.LIVING);
 
                 if (cell.getStatus() === Status.DEAD && neighboringCellsLiving.length === 3) {
-                    cell.setStatus(Status.LIVING);
+                    newGenerationField.getState()[i][j].setStatus(Status.LIVING)
                     continue;
                 }
 
                 if (cell.getStatus() === Status.LIVING && [2,3].includes(neighboringCellsLiving.length)) {
-                    cell.setStatus(Status.LIVING);
+                    newGenerationField.getState()[i][j].setStatus(Status.LIVING);
                 } else {
-                    cell.setStatus(Status.DEAD);
+                    newGenerationField.getState()[i][j].setStatus(Status.DEAD);
                 }
             }
         }
+
+        this.state = newGenerationField.getState();
 
         for (let i = 0; i < this.height; i++) {
             for (let j = 0; j < this.width; j++) {
