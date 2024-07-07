@@ -14,3 +14,12 @@ document.querySelector("button").addEventListener("click", () => {
     game.execute();
 });
 
+el.querySelectorAll("td").forEach((cell) => {
+    cell.addEventListener("click", (ev) => {
+        const y = cell.closest('tr').rowIndex;
+        const x = cell.cellIndex;
+        gameField.toggleCellState(x,y);
+        gameView.updateGameField(gameField.getState());
+    });
+  }
+)

@@ -1,8 +1,8 @@
 import {GameField, IGameField} from "./GameField";
 import {GameView, IGameView} from "./GameView";
-import {Status} from "./types/Cell";
+import {Cell, Status} from "./types/Cell";
 
-export interface IGame {
+export interface IGame{
     execute();
 }
 
@@ -10,11 +10,20 @@ export class Game implements IGame {
     gameField: IGameField;
     gameView: IGameView;
     timeoutRefresh: number;
+    state : Cell[][];
+    public static isRunning: boolean = false;
 
     constructor(gameField: IGameField, gameView: IGameView, timeoutRefresh?: number) {
         this.gameField = gameField;
         this.gameView = gameView;
         this.timeoutRefresh = timeoutRefresh;
+        this.state = gameField.getState();
+        gameView.updateGameField(gameField.getState());
+        gameView.updateGameState({
+            isRunning: false,
+            width: this.state[0].length,
+            height: this.state.length
+        })
     }
 
     start() {
@@ -24,14 +33,12 @@ export class Game implements IGame {
     execute() {
 
         // this.gameView.updateGameField(this.gameField.getState());
-
         this.gameView.updateGameState({
-            width: this.gameField.width,
-            height: this.gameField.height,
             isRunning: true
         })
 
         let myTimer = setInterval(() => {
+            this.gameField.nextGeneration();
 
             if (isAllDeadCells(this.gameField)) {
                 clearInterval(myTimer);

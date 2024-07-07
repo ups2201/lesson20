@@ -16,5 +16,13 @@ table {
 }
 
 .cell--alive {
-    background-color: darkcyan;
+    background-color: black;
+}
+
+.cell--dead {
+    background-color: white;
+}
+
+.cell--must_die {
+    background-color: blue;
 }

@@ -57,7 +57,7 @@ describe("Game", () => {
         });
 
         it("renders initial state on instantiating", () => {
-            // expect(gameField.getState).toHaveBeenCalled();
+            expect(gameField.getState).toHaveBeenCalled();
             expect(gameView.updateGameField).toHaveBeenCalledWith(state);
             expect(gameView.updateGameState).toHaveBeenCalledWith({
                 isRunning: false,

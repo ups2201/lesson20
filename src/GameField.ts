@@ -63,11 +63,9 @@ export class GameField implements IGameField {
             }
         }
 
-        this.state = newGenerationField.getState();
-
         for (let i = 0; i < this.height; i++) {
             for (let j = 0; j < this.width; j++) {
-                const cell = this.state[i][j];
+                const cell = newGenerationField.getState()[i][j];
                 const neighboringCells = this.getNeighboringCells(i, j);
 
                 const neighboringCellsLiving = neighboringCells
@@ -78,6 +76,8 @@ export class GameField implements IGameField {
                 }
             }
         }
+
+        this.state = newGenerationField.getState();
     }
 
     setSize(width: number, height: number) {
@@ -96,6 +96,7 @@ export class GameField implements IGameField {
 
     toggleCellState(x: number, y: number) {
         this.state[y][x] = this.state[y][x].getStatus() === Status.DEAD ? new Cell(Status.LIVING): new Cell(Status.DEAD);
+        console.log(`click cell ${x} ${y}`)
     }
 
     /**

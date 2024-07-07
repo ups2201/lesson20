@@ -1,4 +1,5 @@
 import { GameField } from "./GameField";
+import {Cell} from "./types/Cell";
 
 describe("GameField", () => {
     describe("public interface", () => {
@@ -24,9 +25,9 @@ describe("GameField", () => {
 
         it("supports settings side from constructor", () => {
             expect(gameField.getState()).toEqual([
-                [{"status": 0}, {"status": 0}],
-                [{"status": 0}, {"status": 0}],
-                [{"status": 0}, {"status": 0}]
+                [new Cell(0), new Cell(0)],
+                [new Cell(0), new Cell(0)],
+                [new Cell(0), new Cell(0)]
             ]);
         });
 
@@ -37,15 +38,15 @@ describe("GameField", () => {
             gameField.toggleCellState(x1, y1);
             gameField.toggleCellState(x2, y2);
             expect(gameField.getState()).toEqual([
-                [{"status": 1}, {"status": 0}],
-                [{"status": 0}, {"status": 0}],
-                [{"status": 0}, {"status": 1}]
+                [new Cell(1), new Cell(0)],
+                [new Cell(0), new Cell(0)],
+                [new Cell(0), new Cell(1)]
             ]);
             gameField.toggleCellState(x2, y2);
             expect(gameField.getState()).toEqual([
-                [{"status": 1}, {"status": 0}],
-                [{"status": 0}, {"status": 0}],
-                [{"status": 0}, {"status": 0}]
+                [new Cell(1), new Cell(0)],
+                [new Cell(0), new Cell(0)],
+                [new Cell(0), new Cell(0)]
             ]);
         });
 
@@ -56,29 +57,29 @@ describe("GameField", () => {
             gameField.toggleCellState(x1, y1);
             gameField.toggleCellState(x2, y2);
             expect(gameField.getState()).toEqual([
-                [{"status": 1}, {"status": 0}],
-                [{"status": 0}, {"status": 0}],
-                [{"status": 0}, {"status": 1}]
+                [new Cell(1), new Cell(0)],
+                [new Cell(0), new Cell(0)],
+                [new Cell(0), new Cell(1)]
             ]);
             gameField.nextGeneration();
             expect(gameField.getState()).toEqual([
-                [{"status": 0}, {"status": 0}],
-                [{"status": 0}, {"status": 0}],
-                [{"status": 0}, {"status": 0}]
+                [new Cell(0), new Cell(0)],
+                [new Cell(0), new Cell(0)],
+                [new Cell(0), new Cell(0)]
             ]);
             gameField.toggleCellState(0, 0);
             gameField.toggleCellState(1, 0);
             gameField.toggleCellState(0, 1);
             expect(gameField.getState()).toEqual([
-                [{"status": 1}, {"status": 1}],
-                [{"status": 1}, {"status": 0}],
-                [{"status": 0}, {"status": 0}]
+                [new Cell(1), new Cell(1)],
+                [new Cell(1), new Cell(0)],
+                [new Cell(0), new Cell(0)]
             ]);
             gameField.nextGeneration();
             expect(gameField.getState()).toEqual([
-                [{"status": 1}, {"status": 1}],
-                [{"status": 1}, {"status": 1}],
-                [{"status": 0}, {"status": 0}]
+                [new Cell(1), new Cell(1)],
+                [new Cell(1), new Cell(1)],
+                [new Cell(0), new Cell(0)]
             ]);
         });
 
@@ -87,21 +88,21 @@ describe("GameField", () => {
             gameField.toggleCellState(1, 1);
             gameField.toggleCellState(0, 2);
             expect(gameField.getState()).toEqual([
-                [{"status": 1}, {"status": 0}],
-                [{"status": 0}, {"status": 1}],
-                [{"status": 1}, {"status": 0}]
+                [new Cell(1), new Cell(0)],
+                [new Cell(0), new Cell(1)],
+                [new Cell(1), new Cell(0)]
             ]);
             gameField.setSize(3, 4);
             expect(gameField.getState()).toEqual([
-                [{"status": 1}, {"status": 0}, {"status": 0}],
-                [{"status": 0}, {"status": 1}, {"status": 0}],
-                [{"status": 1}, {"status": 0}, {"status": 0}],
-                [{"status": 0}, {"status": 0}, {"status": 0}]
+                [new Cell(1), new Cell(0), new Cell(0)],
+                [new Cell(0), new Cell(1), new Cell(0)],
+                [new Cell(1), new Cell(0), new Cell(0)],
+                [new Cell(0), new Cell(0), new Cell(0)]
             ]);
             gameField.setSize(2, 2);
             expect(gameField.getState()).toEqual([
-                [{"status": 1}, {"status": 0}],
-                [{"status": 0}, {"status": 1}]
+                [new Cell(1), new Cell(0)],
+                [new Cell(0), new Cell(1)]
             ]);
         });
     });
