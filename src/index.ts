@@ -8,9 +8,11 @@ const el = document.getElementById("app") as HTMLElement;
 const gameView = new GameView(el);
 const gameField = new GameField(5, 5);
 const game = new Game(gameField, gameView, 1000);
-console.log(gameField.getState());
-gameView.updateGameField(gameField.getState());
 
-// document.querySelector("button").addEventListener("click", () => {
-//     game.execute();
-// });
+document.querySelector("#start").addEventListener("click", () => {
+  game.execute();
+});
+
+document.querySelector("#stop").addEventListener("click", () => {
+  game.stop();
+});

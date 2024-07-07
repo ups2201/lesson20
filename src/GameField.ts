@@ -24,7 +24,6 @@ export class GameField implements IGameField {
       this.state[i] = [];
       for (let j = 0; j < width; j++) {
         this.state[i][j] = new Cell(i, j, Status.DEAD);
-        // this.state[i][j] = new Cell(i,j,Status.LIVING);
       }
     }
   }
@@ -106,8 +105,7 @@ export class GameField implements IGameField {
   }
 
   nextFaze2() {
-    console.log("nextFaze1");
-    console.log(this.dieCellsInNextIteration);
+    console.log("nextFaze2 = Фаза отрисовки ячеек");
 
     this.dieCellsInNextIteration.forEach((cell) => {
       this.state[cell.x][cell.y] = new Cell(cell.x, cell.y, Status.DEAD);

@@ -5,11 +5,13 @@ import { Cell, Status } from "./types/Cell";
 export interface IGame {
   execute();
 }
+let myTimer = null;
 
 export class Game implements IGame {
   gameField: GameField;
   gameView: GameView;
   timeoutRefresh: number;
+  speed: number;
   state: Cell[][];
   public static isRunning: boolean = false;
   public static iteration: number = 0;
@@ -69,21 +71,37 @@ export class Game implements IGame {
         this.gameView.updateGameField(this.gameField.getState());
       }
     });
+
+    document.querySelector("#speed").addEventListener("input", (ev) => {
+      this.speed = Number((ev.target as HTMLInputElement).value);
+    });
   }
 
-  start() {
-    this.gameView.start(this.gameField);
+  getTimeoutRefresh() {
+    console.log(this.timeoutRefresh / this.speed);
+    return this.timeoutRefresh / this.speed;
+  }
+
+  stop() {
+    clearInterval(myTimer);
   }
 
   execute() {
-    // this.gameView.updateGameField(this.gameField.getState());
-    // this.gameView.updateGameState({
-    //     isRunning: true
-    // })
-    // let myTimer = setInterval(() => {
-    //     this.gameField.nextGeneration();
-    //
-    // }, 5000);
+    this.gameView.updateGameField(this.gameField.getState());
+    myTimer = setInterval(() => {
+      switch (Game.iteration % 2) {
+        case 0:
+          this.gameField.nextFaze1();
+          break;
+        case 1:
+          this.gameField.nextFaze2();
+          break;
+        default:
+          return;
+      }
+      this.gameView.updateGameField(this.gameField.getState());
+      Game.iteration++;
+    }, this.getTimeoutRefresh());
   }
 
   onFieldSizeChange() {
