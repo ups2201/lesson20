@@ -3,7 +3,8 @@ import {Cell, Status} from "./types/Cell";
 export interface IGameField {
     getState(): Cell[][];
     toggleCellState(x: number, y: number);
-    nextGeneration();
+    nextFaze1();
+    nextFaze2();
     setSize(width: number, height: number);
 }
 
@@ -11,6 +12,8 @@ export class GameField implements IGameField {
     width: number;
     height: number;
     state: Cell[][];
+    bornCellsInNextIteration: Set<Cell> = new Set<Cell>();
+    dieCellsInNextIteration: Set<Cell> = new Set<Cell>();
 
     constructor(width: number = 0, height: number = 0) {
         this.width = width;
@@ -39,9 +42,8 @@ export class GameField implements IGameField {
         return gameField;
     }
 
-    nextGeneration() {
-        console.log(Date.now())
-
+    nextFaze1() {
+        console.log("nextFaze1 = Фаза определения ячеек которые должны умереть и которые должны возродится")
         let neededModifyCellAndNeighboring = new Set<Cell>();
 
         // Ищем ячеки которые необходимо проверить для следующей итерации, добавляем к ним соседние ячейки
@@ -54,58 +56,54 @@ export class GameField implements IGameField {
                 neighboringCells.forEach((e) => neededModifyCellAndNeighboring.add(e));
             })
         })
-        console.log(neededModifyCell);
-        console.log(neededModifyCellAndNeighboring);
 
         const newGenerationField = new GameField(this.width, this.height);
-        let ar = newGenerationField.getState();
+        let nextFieldState = newGenerationField.getState();
 
         neededModifyCellAndNeighboring.forEach((cell) => {
-            const i = cell.x;
-            const j = cell.y;
+            const x = cell.x;
+            const y = cell.y;
 
-            const neighboringCells = this.getNeighboringCells(i, j);
+            const neighboringCells = this.getNeighboringCells(x, y);
 
             // Определяем живые соседние клетки
             const neighboringCellsLiving = neighboringCells
                 .filter(cell => cell.getStatus() === Status.LIVING);
 
             if (cell.getStatus() === Status.DEAD && neighboringCellsLiving.length === 3) {
-                ar[i][j] = new Cell(i, j, Status.LIVING);
+                this.bornCellsInNextIteration.add(new Cell(x, y, Status.LIVING));
                 return;
             }
 
             if (cell.getStatus() === Status.LIVING && [2,3].includes(neighboringCellsLiving.length)) {
-                ar[i][j] = new Cell(i, j, Status.LIVING);
-            } else {
-                ar[i][j] =new Cell(i, j, Status.DEAD);
+                nextFieldState[x][y] = new Cell(x, y, Status.LIVING);
+                return;
+            }
+
+            if (cell.getStatus() === Status.LIVING && (neighboringCellsLiving.length < 2 || neighboringCellsLiving.length > 3)) {
+                nextFieldState[x][y] = new Cell(x, y, Status.MUST_DIE);
+                this.dieCellsInNextIteration.add(new Cell(x, y, Status.MUST_DIE));
+                return;
             }
         })
 
-        this.state = ar;
+        this.state = nextFieldState;
         console.log(this.state);
     }
 
-    changeState(cell: Cell): Cell {
-        const neighboringCells = this.getNeighboringCells(cell.x, cell.y);
-        // console.log(neighboringCells)
+    nextFaze2() {
+        console.log("nextFaze1");
+        console.log(this.dieCellsInNextIteration);
 
-        // Определяем живые соседние клетки
-        const neighboringCellsLiving = neighboringCells
-            .filter(cell => cell.getStatus() === Status.LIVING);
+        this.dieCellsInNextIteration.forEach((cell) => {
+            this.state[cell.x][cell.y] = new Cell(cell.x, cell.y, Status.DEAD);
+        })
+        this.bornCellsInNextIteration.forEach((cell) => {
+            this.state[cell.x][cell.y] = new Cell(cell.x, cell.y, Status.LIVING);
+        })
 
-        if (cell.getStatus() === Status.DEAD && neighboringCellsLiving.length === 3) {
-            console.log("length === 3")
-            return new Cell(cell.x, cell.y, Status.LIVING, cell.cellElement);
-        }
-
-        if (cell.getStatus() === Status.LIVING && [2,3].includes(neighboringCellsLiving.length)) {
-            console.log("length === [2,3]")
-            return new Cell(cell.x, cell.y, Status.LIVING, cell.cellElement);
-        } else {
-            console.log("length === else")
-            return new Cell(cell.x, cell.y, Status.DEAD, cell.cellElement);
-        }
+        this.bornCellsInNextIteration.clear();
+        this.dieCellsInNextIteration.clear();
     }
 
     setSize(width: number, height: number) {
@@ -123,11 +121,6 @@ export class GameField implements IGameField {
     }
 
     toggleCellState(x: number, y: number) {
-        // const cell = this.state[y][x];
-        // cell.cellElement.class
-
-        // this.state[y][x] = this.state[y][x].getStatus() === Status.DEAD ? new Cell(x,y,Status.LIVING): new Cell(x,y,Status.DEAD);
-        // this.state[y][x] = this.state[y][x].getStatus() === Status.DEAD ? this.state[y][x].setStatus(Status.LIVING): new Cell(x,y,Status.DEAD);
         if (this.state[y][x].getStatus() === Status.DEAD) {
             this.state[y][x].setStatus(Status.LIVING);
         } else {

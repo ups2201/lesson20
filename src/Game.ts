@@ -12,6 +12,7 @@ export class Game implements IGame {
     timeoutRefresh: number;
     state : Cell[][];
     public static isRunning: boolean = false;
+    public static iteration: number = 0;
 
     constructor(gameField: GameField, gameView: GameView, timeoutRefresh?: number) {
         this.gameField = gameField as GameField;
@@ -36,8 +37,17 @@ export class Game implements IGame {
 
         const nextGenerationButton = document.querySelector('#nextGeneration')
         nextGenerationButton.addEventListener("click", () => {
-            this.gameField.nextGeneration();
+            switch (Game.iteration % 2) {
+                case 0:
+                    this.gameField.nextFaze1();
+                    break;
+                case 1:
+                    this.gameField.nextFaze2();
+                    break;
+                default: return;
+            }
             this.gameView.updateGameField(this.gameField.getState());
+            Game.iteration++;
         });
 
         document.querySelector('#app').addEventListener('click', (ev) => {
@@ -73,15 +83,11 @@ export class Game implements IGame {
 
 
     onFieldSizeChange() {
-
-        // const element = this.gameView.element;
-
         let gameFieldWidth = Number(this.gameView.element.querySelector('#gameFieldWidth'));
         let gameFieldHeight = Number(this.gameView.element.querySelector('#gameFieldHeight'));
 
         this.gameField.setSize(gameFieldWidth, gameFieldHeight);
         this.gameView.updateGameField(this.gameField.getState());
-
     }
 
     /**

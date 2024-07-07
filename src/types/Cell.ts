@@ -27,14 +27,16 @@ export class Cell {
         cellElement.setAttribute('x', x.toString());
         cellElement.setAttribute('y', y.toString());
         cellElement.innerText = `${x},${y}`
-        if (status === Status.LIVING) {
-            cellElement.classList.add('cell--alive');
-        }
-        if (status === Status.DEAD) {
-            cellElement.classList.add('cell--dead');
-        }
-        if (status === Status.MUST_DIE) {
-            cellElement.classList.add('cell--must_die');
+        switch (status) {
+            case Status.LIVING:
+                cellElement.classList.add('cell--alive');
+                break;
+            case Status.DEAD:
+                cellElement.classList.add('cell--dead');
+                break;
+            case Status.MUST_DIE:
+                cellElement.classList.add('cell--must_die');
+                break;
         }
         return cellElement;
     }
@@ -45,16 +47,23 @@ export class Cell {
 
     public setStatus(status: Status) {
         this.status = status;
-        if (status === Status.LIVING) {
-            this.cellElement.classList.replace('cell--dead', 'cell--alive');
+        switch (status) {
+            case Status.LIVING:
+                this.cellElement.classList.remove('cell--dead');
+                this.cellElement.classList.remove('cell--must_die');
+                this.cellElement.classList.add('cell--alive');
+                break;
+            case Status.DEAD:
+                this.cellElement.classList.remove('cell--alive');
+                this.cellElement.classList.remove('cell--must_die');
+                this.cellElement.classList.add('cell--dead');
+                break;
+            case Status.MUST_DIE:
+                this.cellElement.classList.remove('cell--alive');
+                this.cellElement.classList.remove('cell--dead');
+                this.cellElement.classList.add('cell--must_die');
+                break;
         }
-        if (status === Status.DEAD) {
-            this.cellElement.classList.replace('cell--alive', 'cell--dead');
-        }
-        if (status === Status.MUST_DIE) {
-            this.cellElement.classList.add('cell--must_die');
-        }
-
     }
 
 }
