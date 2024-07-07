@@ -20,8 +20,8 @@ export class GameField implements IGameField {
         for (let i = 0; i < height; i++) {
             this.state[i] = [];
             for (let j = 0; j < width; j++) {
-                // this.state[i][j] = new Cell(i,j,Status.DEAD);
-                this.state[i][j] = new Cell(i,j,Status.LIVING);
+                this.state[i][j] = new Cell(i,j,Status.DEAD);
+                // this.state[i][j] = new Cell(i,j,Status.LIVING);
             }
         }
     }
@@ -40,55 +40,72 @@ export class GameField implements IGameField {
     }
 
     nextGeneration() {
+        console.log(Date.now())
+
+        let neededModifyCellAndNeighboring = new Set<Cell>();
+
+        // Ищем ячеки которые необходимо проверить для следующей итерации, добавляем к ним соседние ячейки
+        const neededModifyCell = this.state.map(row => row.filter(column => column.getStatus() === Status.LIVING));
+        neededModifyCell.forEach((row) => {
+            row.forEach((cell) => {
+                console.log(`${cell.x}, ${cell.y}, ${cell.getStatus()}`)
+                neededModifyCellAndNeighboring.add(cell);
+                const neighboringCells = this.getNeighboringCells(cell.x, cell.y);
+                neighboringCells.forEach((e) => neededModifyCellAndNeighboring.add(e));
+            })
+        })
+        console.log(neededModifyCell);
+        console.log(neededModifyCellAndNeighboring);
 
         const newGenerationField = new GameField(this.width, this.height);
-        for (let i = 0; i < this.height; i++) {
-            for (let j = 0; j < this.width; j++) {
-                const cell = this.state[i][j];
-                console.log("before ")
-                console.log(cell)
-                const neighboringCells = this.getNeighboringCells(i, j);
-                // console.log(neighboringCells)
+        let ar = newGenerationField.getState();
 
-                // Определяем живые соседние клетки
-                const neighboringCellsLiving = neighboringCells
-                    .filter(cell => cell.getStatus() === Status.LIVING);
+        neededModifyCellAndNeighboring.forEach((cell) => {
+            const i = cell.x;
+            const j = cell.y;
 
-                if (cell.getStatus() === Status.DEAD && neighboringCellsLiving.length === 3) {
-                    newGenerationField.getState()[i][j].setStatus(Status.LIVING)
-                    continue;
-                }
+            const neighboringCells = this.getNeighboringCells(i, j);
 
-                if (cell.getStatus() === Status.LIVING && [2,3].includes(neighboringCellsLiving.length)) {
-                    newGenerationField.getState()[i][j].setStatus(Status.LIVING);
-                } else {
-                    newGenerationField.getState()[i][j].setStatus(Status.DEAD);
-                }
-                console.log("after ")
-                console.log(newGenerationField.getState()[i][j])
+            // Определяем живые соседние клетки
+            const neighboringCellsLiving = neighboringCells
+                .filter(cell => cell.getStatus() === Status.LIVING);
+
+            if (cell.getStatus() === Status.DEAD && neighboringCellsLiving.length === 3) {
+                ar[i][j] = new Cell(i, j, Status.LIVING);
+                return;
             }
-        }
-        // this.state = newGenerationField.getState();
 
-        // console.log(newGenerationField.getState())
-        // console.log(this.state)
-
-        for (let i = 0; i < this.height; i++) {
-            for (let j = 0; j < this.width; j++) {
-                const cell = newGenerationField.getState()[i][j];
-                const neighboringCells = this.getNeighboringCells(i, j);
-
-                const neighboringCellsLiving = neighboringCells
-                    .filter(cell => cell.getStatus() === Status.LIVING);
-
-                if (cell.getStatus() === Status.LIVING && (neighboringCellsLiving.length < 2 || neighboringCellsLiving.length > 3)) {
-                    cell.setStatus(Status.MUST_DIE);
-                }
+            if (cell.getStatus() === Status.LIVING && [2,3].includes(neighboringCellsLiving.length)) {
+                ar[i][j] = new Cell(i, j, Status.LIVING);
+            } else {
+                ar[i][j] =new Cell(i, j, Status.DEAD);
             }
-        }
+        })
 
-        this.state = newGenerationField.getState();
+        this.state = ar;
         console.log(this.state);
+    }
+
+    changeState(cell: Cell): Cell {
+        const neighboringCells = this.getNeighboringCells(cell.x, cell.y);
+        // console.log(neighboringCells)
+
+        // Определяем живые соседние клетки
+        const neighboringCellsLiving = neighboringCells
+            .filter(cell => cell.getStatus() === Status.LIVING);
+
+        if (cell.getStatus() === Status.DEAD && neighboringCellsLiving.length === 3) {
+            console.log("length === 3")
+            return new Cell(cell.x, cell.y, Status.LIVING, cell.cellElement);
+        }
+
+        if (cell.getStatus() === Status.LIVING && [2,3].includes(neighboringCellsLiving.length)) {
+            console.log("length === [2,3]")
+            return new Cell(cell.x, cell.y, Status.LIVING, cell.cellElement);
+        } else {
+            console.log("length === else")
+            return new Cell(cell.x, cell.y, Status.DEAD, cell.cellElement);
+        }
     }
 
     setSize(width: number, height: number) {

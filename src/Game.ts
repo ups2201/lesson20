@@ -25,7 +25,6 @@ export class Game implements IGame {
         //     height: this.state.length
         // })
 
-        // const element = this.gameView.element;
         const setSizeButton = document.querySelector('#setSize')
         setSizeButton.addEventListener("click", () => {
             let gameFieldWidth = Number((document.querySelector('#gameFieldWidth') as HTMLInputElement).value);
@@ -33,7 +32,6 @@ export class Game implements IGame {
 
             this.gameField.setSize(gameFieldWidth, gameFieldHeight);
             this.gameView.updateGameField(this.gameField.getState());
-            // this.onClick();
         });
 
         const nextGenerationButton = document.querySelector('#nextGeneration')

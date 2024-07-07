@@ -21,11 +21,12 @@ export class Cell {
         this.cellElement = cellElement;
     }
 
-    public getDefaultCell(x: number, y: number, status: Status) {
+    public getDefaultCell(x: number, y: number, status: Status): HTMLElement {
         const cellElement = document.createElement("td");
         cellElement.classList.add('cell');
         cellElement.setAttribute('x', x.toString());
         cellElement.setAttribute('y', y.toString());
+        cellElement.innerText = `${x},${y}`
         if (status === Status.LIVING) {
             cellElement.classList.add('cell--alive');
         }
