@@ -2,12 +2,24 @@
 <html>
   <head>
     <title>Game of Life</title>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
   </head>
 
   <body>
     <h1>Game of Life</h1>
-    <div id="app"></div>
+    <main id="app">
+      <section>
+        <button id="setSize">Задать размер</button>
+        <label>Ширина:</label><input id="gameFieldWidth">
+        <label>Высота:</label><input id="gameFieldHeight">
+      </section>
+      <section class="grid">
+        <table class="gameField"></table>
+      </section>
+      <section>
+        <button id="nextGeneration">Next Generation</button>
+      </section>
+    </main>
 
     <script src="src/index.ts"></script>
   </body>

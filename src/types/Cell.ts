@@ -1,7 +1,3 @@
-// export type Cell = {
-//     state : State;
-// };
-
 export enum Status {
     DEAD = 0,
     LIVING = 1,
@@ -9,13 +5,37 @@ export enum Status {
 }
 
 export class Cell {
+
     x: number;
     y: number;
     cellElement: HTMLElement;
     private status: Status;
 
-    constructor(status: Status) {
+    constructor(x: number, y: number, status: Status, cellElement?: HTMLElement) {
+        this.x = x;
+        this.y = y;
         this.status = status;
+        if (cellElement === undefined) {
+            cellElement = this.getDefaultCell(x,y,status);
+        }
+        this.cellElement = cellElement;
+    }
+
+    public getDefaultCell(x: number, y: number, status: Status) {
+        const cellElement = document.createElement("td");
+        cellElement.classList.add('cell');
+        cellElement.setAttribute('x', x.toString());
+        cellElement.setAttribute('y', y.toString());
+        if (status === Status.LIVING) {
+            cellElement.classList.add('cell--alive');
+        }
+        if (status === Status.DEAD) {
+            cellElement.classList.add('cell--dead');
+        }
+        if (status === Status.MUST_DIE) {
+            cellElement.classList.add('cell--must_die');
+        }
+        return cellElement;
     }
 
     public getStatus(): Status {
@@ -24,16 +44,16 @@ export class Cell {
 
     public setStatus(status: Status) {
         this.status = status;
-    }
-
-    public getClassElement(): string {
-        if (this.status === Status.LIVING) {
-            return 'cell--alive';
+        if (status === Status.LIVING) {
+            this.cellElement.classList.replace('cell--dead', 'cell--alive');
         }
-        if (this.status === Status.DEAD) {
-            return 'cell--dead';
+        if (status === Status.DEAD) {
+            this.cellElement.classList.replace('cell--alive', 'cell--dead');
         }
-    }
+        if (status === Status.MUST_DIE) {
+            this.cellElement.classList.add('cell--must_die');
+        }
 
+    }
 
 }

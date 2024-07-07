@@ -26,3 +26,7 @@ table {
 .cell--must_die {
     background-color: blue;
 }
+
+main {
+    display: grid;
+}

@@ -7,23 +7,51 @@ export interface IGame{
 }
 
 export class Game implements IGame {
-    gameField: IGameField;
-    gameView: IGameView;
+    gameField: GameField;
+    gameView: GameView;
     timeoutRefresh: number;
     state : Cell[][];
     public static isRunning: boolean = false;
 
-    constructor(gameField: IGameField, gameView: IGameView, timeoutRefresh?: number) {
-        this.gameField = gameField;
-        this.gameView = gameView;
+    constructor(gameField: GameField, gameView: GameView, timeoutRefresh?: number) {
+        this.gameField = gameField as GameField;
+        this.gameView = gameView as GameView;
         this.timeoutRefresh = timeoutRefresh;
         this.state = gameField.getState();
         gameView.updateGameField(gameField.getState());
-        gameView.updateGameState({
-            isRunning: false,
-            width: this.state[0].length,
-            height: this.state.length
-        })
+        // gameView.updateGameState({
+        //     isRunning: false,
+        //     width: this.state[0].length,
+        //     height: this.state.length
+        // })
+
+        // const element = this.gameView.element;
+        const setSizeButton = document.querySelector('#setSize')
+        setSizeButton.addEventListener("click", () => {
+            let gameFieldWidth = Number((document.querySelector('#gameFieldWidth') as HTMLInputElement).value);
+            let gameFieldHeight = Number((document.querySelector('#gameFieldHeight') as HTMLInputElement).value);
+
+            this.gameField.setSize(gameFieldWidth, gameFieldHeight);
+            this.gameView.updateGameField(this.gameField.getState());
+            // this.onClick();
+        });
+
+        const nextGenerationButton = document.querySelector('#nextGeneration')
+        nextGenerationButton.addEventListener("click", () => {
+            this.gameField.nextGeneration();
+            this.gameView.updateGameField(this.gameField.getState());
+        });
+
+        document.querySelector('#app').addEventListener('click', (ev) => {
+            if (ev.target instanceof HTMLTableCellElement) {
+                let y = ev.target.closest('tr').rowIndex;
+                let x = ev.target.cellIndex;
+                console.log(x)
+                console.log(y)
+                this.gameField.toggleCellState(x, y);
+                this.gameView.updateGameField(this.gameField.getState());
+            }
+        });
     }
 
     start() {
@@ -33,18 +61,29 @@ export class Game implements IGame {
     execute() {
 
         // this.gameView.updateGameField(this.gameField.getState());
-        this.gameView.updateGameState({
-            isRunning: true
-        })
+        // this.gameView.updateGameState({
+        //     isRunning: true
+        // })
 
-        let myTimer = setInterval(() => {
-            this.gameField.nextGeneration();
+        // let myTimer = setInterval(() => {
+        //     this.gameField.nextGeneration();
+        //
+        // }, 5000);
 
-            if (isAllDeadCells(this.gameField)) {
-                clearInterval(myTimer);
-                alert("GAME OVER")
-            }
-        }, this.timeoutRefresh);
+
+    }
+
+
+    onFieldSizeChange() {
+
+        // const element = this.gameView.element;
+
+        let gameFieldWidth = Number(this.gameView.element.querySelector('#gameFieldWidth'));
+        let gameFieldHeight = Number(this.gameView.element.querySelector('#gameFieldHeight'));
+
+        this.gameField.setSize(gameFieldWidth, gameFieldHeight);
+        this.gameView.updateGameField(this.gameField.getState());
+
     }
 
     /**
