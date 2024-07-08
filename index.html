@@ -8,39 +8,8 @@
 <body>
 <h1>Game of Life</h1>
 <main id="app">
-    <section>
-        <fieldset>
-            <legend>Размеры поля:</legend>
-            <label>Ширина:</label><input id="gameFieldWidth" type="number">
-            <label>Высота:</label><input id="gameFieldHeight" type="number">
-            <button id="setSize">Задать размер</button>
-        </fieldset>
-    </section>
-    <section>
-        <fieldset>
-            <legend>Выберите режим работы:</legend>
-            <div>
-                <input type="radio" id="autoMode" name="drone" value="autoMode" />
-                <label for="autoMode">Автоматическая итерация</label>
-            </div>
-            <div>
-                <input type="radio" id="customMode" name="drone" value="customMode" checked/>
-                <label for="customMode">Ручная итерация</label>
-                <button id="nextGeneration">Следующая фаза</button>
-            </div>
-        </fieldset>
-        <fieldset>
-            <legend>Выберите скорость работы:</legend>
-            <div>
-                <input type="range" id="speed" name="speed" min="1" max="6" />
-            </div>
-            <button id="start">Старт</button>
-            <button id="stop">Стоп</button>
-        </fieldset>
-    </section>
-    <section class="grid">
-        <table class="gameField"></table>
-    </section>
+</main>
+<main id="app2">
 </main>
 
 <script src="src/index.ts"></script>
