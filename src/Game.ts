@@ -34,14 +34,7 @@ export class Game implements IGame {
 
     const setSizeButton = this.gameView.element.querySelector("#setSize");
     setSizeButton.addEventListener("click", () => {
-      let gameFieldWidth = Number(
-        (this.gameView.element.querySelector("#gameFieldWidth") as HTMLInputElement).value,
-      );
-      let gameFieldHeight = Number(
-        (this.gameView.element.querySelector("#gameFieldHeight") as HTMLInputElement).value,
-      );
-
-      this.gameField.setSize(gameFieldWidth, gameFieldHeight);
+      this.gameView.onFieldSizeChange(this.gameField.setSize.bind(this.gameField));
       this.gameView.updateGameField(this.gameField.getState());
     });
 
@@ -131,18 +124,6 @@ export class Game implements IGame {
       const nextGenerationButton = this.gameView.element.querySelector("#nextGeneration");
       nextGenerationButton.dispatchEvent(new Event("click"));
     }, this.getTimeoutRefresh());
-  }
-
-  onFieldSizeChange() {
-    let gameFieldWidth = Number(
-      this.gameView.element.querySelector("#gameFieldWidth"),
-    );
-    let gameFieldHeight = Number(
-      this.gameView.element.querySelector("#gameFieldHeight"),
-    );
-
-    this.gameField.setSize(gameFieldWidth, gameFieldHeight);
-    this.gameView.updateGameField(this.gameField.getState());
   }
 
   /**

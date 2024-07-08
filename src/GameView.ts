@@ -11,7 +11,7 @@ export interface IGameView {
   // });
   // onCellClick(cb: (x: number, y: number) => void);
   // onGameStateChange(cb: (newState: boolean) => void);
-  // onFieldSizeChange(cb: (width: number, height: number) => void);
+  onFieldSizeChange(cb: (width: number, height: number) => void);
   // start(field: IGameField);
 }
 
@@ -27,8 +27,8 @@ export class GameView implements IGameView {
     <section>
         <fieldset>
             <legend>Размеры поля:</legend>
-            <label>Ширина:</label><input id="gameFieldWidth" type="number" min="1">
-            <label>Высота:</label><input id="gameFieldHeight" type="number" min="1">
+            <label>Ширина:</label><input class="sizeField" id="gameFieldWidth" type="number" min="1">
+            <label>Высота:</label><input class="sizeField" id="gameFieldHeight" type="number" min="1">
             <button id="setSize">Задать размер</button>
         </fieldset>
     </section>
@@ -60,11 +60,15 @@ export class GameView implements IGameView {
     `
   }
 
-  onFieldSizeChange() {
-    let gameFieldWidth = Number(this.element.querySelector("#gameFieldWidth"));
-    let gameFieldHeight = Number(
-      this.element.querySelector("#gameFieldHeight"),
+  onFieldSizeChange(cb: (width: number, height: number) => void) {
+    let gameFieldWidth = Number(
+        (this.element.querySelector("#gameFieldWidth") as HTMLInputElement).value,
     );
+    let gameFieldHeight = Number(
+        (this.element.querySelector("#gameFieldHeight") as HTMLInputElement).value,
+    );
+
+    cb(gameFieldWidth, gameFieldHeight);
   }
 
   onGameStateChange(cb: (newState: boolean) => void) {}
@@ -84,5 +88,6 @@ export class GameView implements IGameView {
     }
     this.element.querySelector(".grid").appendChild(table);
   }
+
 
 }
