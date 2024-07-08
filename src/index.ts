@@ -9,10 +9,7 @@ const gameView = new GameView(el);
 const gameField = new GameField(5, 5);
 const game = new Game(gameField, gameView, 1000);
 
-document.querySelector("#start").addEventListener("click", () => {
-  game.execute();
-});
-
-document.querySelector("#stop").addEventListener("click", () => {
-  game.stop();
-});
+const el2 = document.getElementById("app2") as HTMLElement;
+const gameView2 = new GameView(el2);
+const gameField2 = new GameField(3, 3);
+const game2 = new Game(gameField2, gameView2, 1000);
