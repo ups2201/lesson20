@@ -56,12 +56,8 @@ export class Game implements IGame {
 
     this.gameView.element.addEventListener("click", (ev) => {
       if (ev.target instanceof HTMLTableCellElement) {
-        let y = ev.target.closest("tr").rowIndex;
-        let x = ev.target.cellIndex;
-        console.log(x);
-        console.log(y);
-        this.gameField.toggleCellState(x, y);
-        this.gameView.updateGameField(this.gameField.getState());
+        const cell = ev.target as HTMLTableCellElement;
+        this.gameView.onCellClick(cell, this.gameField.toggleCellState.bind(this.gameField));
       }
     });
 
@@ -70,16 +66,16 @@ export class Game implements IGame {
     });
 
     this.gameView.element.querySelector("#start").addEventListener("click", () => {
-      (this.gameView.element.querySelector('#start') as HTMLButtonElement).disabled = true;
-      (this.gameView.element.querySelector('#stop') as HTMLButtonElement).disabled = false;
-      (this.gameView.element.querySelector('#speed') as HTMLInputElement).disabled = true;
+      this.gameView.startButton.disabled = true;
+      this.gameView.stopButton.disabled = false;
+      this.gameView.speedRange.disabled = true;
       this.execute();
     });
 
     this.gameView.element.querySelector("#stop").addEventListener("click", () => {
-      (this.gameView.element.querySelector('#start') as HTMLButtonElement).disabled = false;
-      (this.gameView.element.querySelector('#stop') as HTMLButtonElement).disabled = true;
-      (this.gameView.element.querySelector('#speed') as HTMLInputElement).disabled = false;
+      this.gameView.startButton.disabled = false;
+      this.gameView.stopButton.disabled = true;
+      this.gameView.speedRange.disabled = false;
       this.stop();
     });
 
@@ -87,22 +83,16 @@ export class Game implements IGame {
         (radio => {
           radio.addEventListener('click', (event) =>{
             const id = (event.target as HTMLInputElement).getAttribute('id');
-
-            const nextGeneration = this.gameView.element.querySelector('#nextGeneration') as HTMLButtonElement;
-            const startButton = this.gameView.element.querySelector('#start') as HTMLButtonElement;
-            const stopButton = this.gameView.element.querySelector('#stop') as HTMLButtonElement;
-            const speedRange = this.gameView.element.querySelector('#speed') as HTMLInputElement;
-
             if (id === "autoMode") {
-              nextGeneration.disabled = true;
-              startButton.disabled = false;
-              stopButton.disabled = true;
-              speedRange.disabled = false;
+              this.gameView.nextGeneration.disabled = true;
+              this.gameView.startButton.disabled = false;
+              this.gameView.stopButton.disabled = true;
+              this.gameView.speedRange.disabled = false;
             } else {
-              nextGeneration.disabled = false;
-              startButton.disabled = true;
-              stopButton.disabled = true;
-              speedRange.disabled = true;
+              this.gameView.nextGeneration.disabled = false;
+              this.gameView.startButton.disabled = true;
+              this.gameView.stopButton.disabled = true;
+              this.gameView.speedRange.disabled = true;
             }
           });
         })
@@ -121,8 +111,7 @@ export class Game implements IGame {
   execute() {
     this.gameView.updateGameField(this.gameField.getState());
     this.myTimer = setInterval(() => {
-      const nextGenerationButton = this.gameView.element.querySelector("#nextGeneration");
-      nextGenerationButton.dispatchEvent(new Event("click"));
+      this.gameView.nextGeneration.dispatchEvent(new Event("click"));
     }, this.getTimeoutRefresh());
   }
 

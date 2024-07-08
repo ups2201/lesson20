@@ -9,7 +9,7 @@ export interface IGameView {
   //     height?: number;
   //     isRunning?: boolean;
   // });
-  // onCellClick(cb: (x: number, y: number) => void);
+  onCellClick(cell: HTMLTableCellElement, cb: (x: number, y: number) => void);
   // onGameStateChange(cb: (newState: boolean) => void);
   onFieldSizeChange(cb: (width: number, height: number) => void);
   // start(field: IGameField);
@@ -17,6 +17,10 @@ export interface IGameView {
 
 export class GameView implements IGameView {
   element: HTMLElement;
+  startButton: HTMLButtonElement;
+  stopButton: HTMLButtonElement;
+  speedRange: HTMLInputElement;
+  nextGeneration: HTMLButtonElement;
 
   constructor(element: HTMLElement) {
     this.element = element;
@@ -58,6 +62,11 @@ export class GameView implements IGameView {
         <table class="gameField"></table>
     </section>
     `
+
+    this.startButton = this.element.querySelector('#start') as HTMLButtonElement;
+    this.stopButton = this.element.querySelector('#stop') as HTMLButtonElement;
+    this.speedRange = this.element.querySelector('#speed') as HTMLInputElement;
+    this.nextGeneration = this.element.querySelector('#nextGeneration') as HTMLButtonElement;
   }
 
   onFieldSizeChange(cb: (width: number, height: number) => void) {
@@ -69,6 +78,13 @@ export class GameView implements IGameView {
     );
 
     cb(gameFieldWidth, gameFieldHeight);
+  }
+
+  onCellClick(cell: HTMLTableCellElement, cb: (x: number, y: number) => void) {
+    let x = Number(cell.getAttribute('x'));
+    let y = Number(cell.getAttribute('y'));
+    cb(x, y);
+    console.log(`onCellClick ${x} ${y}`);
   }
 
   onGameStateChange(cb: (newState: boolean) => void) {}

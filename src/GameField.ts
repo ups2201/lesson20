@@ -136,10 +136,10 @@ export class GameField implements IGameField {
   }
 
   toggleCellState(x: number, y: number) {
-    if (this.state[y][x].getStatus() === Status.DEAD) {
-      this.state[y][x].setStatus(Status.LIVING);
+    if (this.state[x][y].getStatus() === Status.DEAD) {
+      this.state[x][y].setStatus(Status.LIVING);
     } else {
-      this.state[y][x].setStatus(Status.DEAD);
+      this.state[x][y].setStatus(Status.DEAD);
     }
 
     console.log(`click cell ${x} ${y}`);
