@@ -16,7 +16,7 @@ export class GameView implements IGameView {
   constructor(element: HTMLElement) {
     this.element = element;
 
-    const id = element.getAttribute('id');
+    const id = element.getAttribute("id");
 
     this.element.innerHTML = `
     <section>
@@ -52,33 +52,36 @@ export class GameView implements IGameView {
     <section class="grid">
         <table class="gameField"></table>
     </section>
-    `
+    `;
 
-    this.startButton = this.element.querySelector('#start') as HTMLButtonElement;
-    this.stopButton = this.element.querySelector('#stop') as HTMLButtonElement;
-    this.speedRange = this.element.querySelector('#speed') as HTMLInputElement;
-    this.nextGeneration = this.element.querySelector('#nextGeneration') as HTMLButtonElement;
+    this.startButton = this.element.querySelector(
+      "#start",
+    ) as HTMLButtonElement;
+    this.stopButton = this.element.querySelector("#stop") as HTMLButtonElement;
+    this.speedRange = this.element.querySelector("#speed") as HTMLInputElement;
+    this.nextGeneration = this.element.querySelector(
+      "#nextGeneration",
+    ) as HTMLButtonElement;
   }
 
   onFieldSizeChange(cb: (width: number, height: number) => void) {
-    let gameFieldWidth = Number(
-        (this.element.querySelector("#gameFieldWidth") as HTMLInputElement).value,
+    const gameFieldWidth = Number(
+      (this.element.querySelector("#gameFieldWidth") as HTMLInputElement).value,
     );
-    let gameFieldHeight = Number(
-        (this.element.querySelector("#gameFieldHeight") as HTMLInputElement).value,
+    const gameFieldHeight = Number(
+      (this.element.querySelector("#gameFieldHeight") as HTMLInputElement)
+        .value,
     );
 
     cb(gameFieldWidth, gameFieldHeight);
   }
 
   onCellClick(cell: HTMLTableCellElement, cb: (x: number, y: number) => void) {
-    let x = Number(cell.getAttribute('x'));
-    let y = Number(cell.getAttribute('y'));
+    const x = Number(cell.getAttribute("x"));
+    const y = Number(cell.getAttribute("y"));
     cb(x, y);
     console.log(`onCellClick ${x} ${y}`);
   }
-
-  onGameStateChange(cb: (newState: boolean) => void) {}
 
   updateGameField(field: Cell[][]) {
     let table = this.element.querySelector(".gameField");
@@ -87,7 +90,7 @@ export class GameView implements IGameView {
     table.classList.add("gameField");
 
     for (let i = 0; i < field.length; i++) {
-      let tr = document.createElement("tr");
+      const tr = document.createElement("tr");
       for (let j = 0; j < field[i].length; j++) {
         tr.appendChild(field[i][j].cellElement);
       }
@@ -109,6 +112,4 @@ export class GameView implements IGameView {
       this.speedRange.disabled = true;
     }
   }
-
-
 }

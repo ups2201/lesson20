@@ -1,5 +1,5 @@
-import { GameField, IGameField } from "./GameField";
-import { GameView, IGameView } from "./GameView";
+import { GameField } from "./GameField";
+import { GameView } from "./GameView";
 import { Cell, Status } from "./types/Cell";
 
 export interface IGame {
@@ -27,19 +27,17 @@ export class Game implements IGame {
     this.timeoutRefresh = timeoutRefresh;
     this.state = gameField.getState();
     gameView.updateGameField(gameField.getState());
-    // gameView.updateGameState({
-    //     isRunning: false,
-    //     width: this.state[0].length,
-    //     height: this.state.length
-    // })
 
     const setSizeButton = this.gameView.element.querySelector("#setSize");
     setSizeButton.addEventListener("click", () => {
-      this.gameView.onFieldSizeChange(this.gameField.setSize.bind(this.gameField));
+      this.gameView.onFieldSizeChange(
+        this.gameField.setSize.bind(this.gameField),
+      );
       this.gameView.updateGameField(this.gameField.getState());
     });
 
-    const nextGenerationButton = this.gameView.element.querySelector("#nextGeneration");
+    const nextGenerationButton =
+      this.gameView.element.querySelector("#nextGeneration");
     nextGenerationButton.addEventListener("click", () => {
       switch (this.iteration % 2) {
         case 0:
@@ -59,41 +57,50 @@ export class Game implements IGame {
     this.gameView.element.addEventListener("click", (ev) => {
       if (ev.target instanceof HTMLTableCellElement) {
         const cell = ev.target as HTMLTableCellElement;
-        this.gameView.onCellClick(cell, this.gameField.toggleCellState.bind(this.gameField));
+        this.gameView.onCellClick(
+          cell,
+          this.gameField.toggleCellState.bind(this.gameField),
+        );
       }
     });
 
-    this.gameView.element.querySelector("#speed").addEventListener("input", (ev) => {
-      this.speed = Number((ev.target as HTMLInputElement).value);
-    });
+    this.gameView.element
+      .querySelector("#speed")
+      .addEventListener("input", (ev) => {
+        this.speed = Number((ev.target as HTMLInputElement).value);
+      });
 
-    this.gameView.element.querySelector("#start").addEventListener("click", () => {
-      this.gameView.startButton.disabled = true;
-      this.gameView.stopButton.disabled = false;
-      this.gameView.speedRange.disabled = true;
-      this.execute();
-    });
+    this.gameView.element
+      .querySelector("#start")
+      .addEventListener("click", () => {
+        this.gameView.startButton.disabled = true;
+        this.gameView.stopButton.disabled = false;
+        this.gameView.speedRange.disabled = true;
+        this.execute();
+      });
 
-    this.gameView.element.querySelector("#stop").addEventListener("click", () => {
-      this.gameView.startButton.disabled = false;
-      this.gameView.stopButton.disabled = true;
-      this.gameView.speedRange.disabled = false;
-      this.stop();
-    });
+    this.gameView.element
+      .querySelector("#stop")
+      .addEventListener("click", () => {
+        this.gameView.startButton.disabled = false;
+        this.gameView.stopButton.disabled = true;
+        this.gameView.speedRange.disabled = false;
+        this.stop();
+      });
 
-    this.gameView.element.querySelectorAll('input[type=radio]').forEach(
-        (radio => {
-          radio.addEventListener('click', (event) =>{
-            const id = (event.target as HTMLInputElement).getAttribute('id');
-            if (id === "autoMode") {
-              this.autoMode = true;
-            } else {
-              this.autoMode = false;
-            }
-            this.gameView.onChangeModeView(this.autoMode);
-          });
-        })
-    )
+    this.gameView.element
+      .querySelectorAll("input[type=radio]")
+      .forEach((radio) => {
+        radio.addEventListener("click", (event) => {
+          const id = (event.target as HTMLInputElement).getAttribute("id");
+          if (id === "autoMode") {
+            this.autoMode = true;
+          } else {
+            this.autoMode = false;
+          }
+          this.gameView.onChangeModeView(this.autoMode);
+        });
+      });
   }
 
   getTimeoutRefresh() {
@@ -118,10 +125,14 @@ export class Game implements IGame {
    * @param gameField
    */
   checkIsAllDeadCells(): boolean {
-    const result = Array.prototype.concat
+    const result =
+      Array.prototype.concat
         .apply([], this.gameField.getState())
-        .filter((cell) => cell.getStatus() === Status.LIVING || cell.getStatus() === Status.MUST_DIE)
-        .length === 0
+        .filter(
+          (cell) =>
+            cell.getStatus() === Status.LIVING ||
+            cell.getStatus() === Status.MUST_DIE,
+        ).length === 0;
     if (result) {
       this.stop();
       alert("Игра окончена, все клетки умерли");

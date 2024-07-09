@@ -13,6 +13,10 @@ const compat = new FlatCompat({baseDirectory: __dirname, recommendedConfig: plug
 
 export default [
   {languageOptions: { globals: globals.browser }},
-  ...compat.extends("standard-with-typescript"),
   ...tseslint.configs.recommended,
+  {
+    rules: {
+      "@typescript-eslint/no-unused-vars": "off"
+    }
+  }
 ];

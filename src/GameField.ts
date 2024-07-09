@@ -45,7 +45,7 @@ export class GameField implements IGameField {
     console.log(
       "nextFaze1 = Фаза определения ячеек которые должны умереть и которые должны возродится",
     );
-    let neededModifyCellAndNeighboring = new Set<Cell>();
+    const neededModifyCellAndNeighboring = new Set<Cell>();
 
     // Ищем ячеки которые необходимо проверить для следующей итерации, добавляем к ним соседние ячейки
     const neededModifyCell = this.state.map((row) =>
@@ -61,7 +61,7 @@ export class GameField implements IGameField {
     });
 
     const newGenerationField = new GameField(this.width, this.height);
-    let nextFieldState = newGenerationField.getState();
+    const nextFieldState = newGenerationField.getState();
 
     neededModifyCellAndNeighboring.forEach((cell) => {
       const x = cell.x;
@@ -96,7 +96,6 @@ export class GameField implements IGameField {
       ) {
         nextFieldState[x][y] = new Cell(x, y, Status.MUST_DIE);
         this.dieCellsInNextIteration.add(new Cell(x, y, Status.MUST_DIE));
-        return;
       }
     });
 
@@ -162,7 +161,7 @@ export class GameField implements IGameField {
     neighboringCells.push(this.getCellValue(x, y + 1));
     neighboringCells.push(this.getCellValue(x, y - 1));
 
-    return neighboringCells.filter((e) => e != undefined);
+    return neighboringCells.filter((e) => e !== undefined);
   }
 
   getCellValue(x: number, y: number): Cell {
