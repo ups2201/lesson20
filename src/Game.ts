@@ -15,6 +15,7 @@ export class Game implements IGame {
   public isRunning: boolean = false;
   public iteration: number = 0;
   myTimer: NodeJS.Timeout;
+  autoMode: boolean = false;
 
   constructor(
     gameField: GameField,
@@ -52,6 +53,7 @@ export class Game implements IGame {
       }
       this.gameView.updateGameField(this.gameField.getState());
       this.iteration++;
+      this.checkIsAllDeadCells();
     });
 
     this.gameView.element.addEventListener("click", (ev) => {
@@ -84,16 +86,11 @@ export class Game implements IGame {
           radio.addEventListener('click', (event) =>{
             const id = (event.target as HTMLInputElement).getAttribute('id');
             if (id === "autoMode") {
-              this.gameView.nextGeneration.disabled = true;
-              this.gameView.startButton.disabled = false;
-              this.gameView.stopButton.disabled = true;
-              this.gameView.speedRange.disabled = false;
+              this.autoMode = true;
             } else {
-              this.gameView.nextGeneration.disabled = false;
-              this.gameView.startButton.disabled = true;
-              this.gameView.stopButton.disabled = true;
-              this.gameView.speedRange.disabled = true;
+              this.autoMode = false;
             }
+            this.gameView.onChangeModeView(this.autoMode);
           });
         })
     )
@@ -106,6 +103,7 @@ export class Game implements IGame {
 
   stop() {
     clearInterval(this.myTimer);
+    this.gameView.onChangeModeView(this.autoMode);
   }
 
   execute() {
@@ -119,19 +117,15 @@ export class Game implements IGame {
    * Все мёртвые клетки
    * @param gameField
    */
-  isAllDeadCells(gameField: GameField): boolean {
-    return (
-      Array.prototype.concat
-        .apply([], gameField.getState())
-        .filter((cell) => cell.getStatus() === Status.LIVING).length === 0
-    );
+  checkIsAllDeadCells(): boolean {
+    const result = Array.prototype.concat
+        .apply([], this.gameField.getState())
+        .filter((cell) => cell.getStatus() === Status.LIVING || cell.getStatus() === Status.MUST_DIE)
+        .length === 0
+    if (result) {
+      this.stop();
+      alert("Игра окончена, все клетки умерли");
+      return true;
+    }
   }
-}
-
-function isAllDeadCells(gameField: IGameField) {
-  return (
-    Array.prototype.concat
-      .apply([], gameField.getState())
-      .filter((cell) => cell.getStatus() === Status.LIVING).length === 0
-  );
 }

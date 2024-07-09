@@ -1,18 +1,9 @@
-import { Cell, Status } from "./types/Cell";
-import { GameField, IGameField } from "./GameField";
-import { Game } from "./Game";
+import { Cell } from "./types/Cell";
 
 export interface IGameView {
   updateGameField(field: Cell[][]);
-  // updateGameState(state: {
-  //     width?: number;
-  //     height?: number;
-  //     isRunning?: boolean;
-  // });
   onCellClick(cell: HTMLTableCellElement, cb: (x: number, y: number) => void);
-  // onGameStateChange(cb: (newState: boolean) => void);
   onFieldSizeChange(cb: (width: number, height: number) => void);
-  // start(field: IGameField);
 }
 
 export class GameView implements IGameView {
@@ -103,6 +94,20 @@ export class GameView implements IGameView {
       table.appendChild(tr);
     }
     this.element.querySelector(".grid").appendChild(table);
+  }
+
+  onChangeModeView(autoMode: boolean) {
+    if (autoMode) {
+      this.nextGeneration.disabled = true;
+      this.startButton.disabled = false;
+      this.stopButton.disabled = true;
+      this.speedRange.disabled = false;
+    } else {
+      this.nextGeneration.disabled = false;
+      this.startButton.disabled = true;
+      this.stopButton.disabled = true;
+      this.speedRange.disabled = true;
+    }
   }
 
 
