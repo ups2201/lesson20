@@ -2,11 +2,14 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
 module.exports = {
-  entry: "./src/main.js",
+  entry: "./src/index.ts",
   output: {
-    filename: "main.js",
+    filename: "[name].bundle.js",
     path: path.resolve(__dirname, "dist"),
     clean: true,
+  },
+  resolve: {
+    extensions: [".js", ".ts"],
   },
   module: {
     rules: [
@@ -26,6 +29,13 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.(?:js|mjs|cjs|ts)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader'
+        }
+      },
     ],
   },
   devServer: {
@@ -33,8 +43,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      filename: "index.html",
-      template: "./src/index.html",
+      template: "index.html",
     }),
   ],
   mode: "development",
