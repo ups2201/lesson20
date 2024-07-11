@@ -15,17 +15,17 @@ export class Cell {
     this.y = y;
     this.status = status;
     if (cellElement === undefined) {
-      cellElement = this.getDefaultCell(x, y, status);
+      cellElement = this.getDefaultCell(status);
     }
     this.cellElement = cellElement;
   }
 
-  public getDefaultCell(x: number, y: number, status: Status): HTMLElement {
+  public getDefaultCell(status: Status): HTMLElement {
     const cellElement = document.createElement("td");
     cellElement.classList.add("cell");
-    cellElement.setAttribute("x", x.toString());
-    cellElement.setAttribute("y", y.toString());
-    cellElement.innerText = `${x},${y}`;
+    cellElement.setAttribute("x", this.x.toString());
+    cellElement.setAttribute("y", this.y.toString());
+    cellElement.innerText = `${this.x},${this.y}`;
     switch (status) {
       case Status.LIVING:
         cellElement.classList.add("cell--alive");

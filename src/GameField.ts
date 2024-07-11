@@ -3,8 +3,7 @@ import { Cell, Status } from "./types/Cell";
 export interface IGameField {
   getState(): Cell[][];
   toggleCellState(x: number, y: number);
-  nextFaze1();
-  nextFaze2();
+  nextGeneration(iteration: number);
   setSize(width: number, height: number);
 }
 
@@ -41,6 +40,20 @@ export class GameField implements IGameField {
     return gameField;
   }
 
+  nextGeneration(iteration: number) {
+    switch (iteration % 2) {
+      case 0:
+        this.nextFaze1();
+        break;
+      case 1:
+        this.nextFaze2();
+        break;
+      default:
+        return;
+    }
+  }
+
+  //Фаза отрисовки ячеек которые должны умереть и определение ячеек которые должны возродится
   nextFaze1() {
     console.log(
       "nextFaze1 = Фаза определения ячеек которые должны умереть и которые должны возродится",
@@ -103,6 +116,7 @@ export class GameField implements IGameField {
     console.log(this.state);
   }
 
+  //Фаза отрисовки ячеек
   nextFaze2() {
     console.log("nextFaze2 = Фаза отрисовки ячеек");
 
@@ -165,10 +179,6 @@ export class GameField implements IGameField {
   }
 
   getCellValue(x: number, y: number): Cell {
-    try {
-      return this.state[x][y];
-    } catch (e) {
-      return undefined;
-    }
+    return this.state?.[x]?.[y];
   }
 }

@@ -4,6 +4,8 @@ import { Cell, Status } from "./types/Cell";
 
 export interface IGame {
   execute();
+  stop();
+  getTimeoutRefresh();
 }
 
 export class Game implements IGame {
@@ -22,33 +24,25 @@ export class Game implements IGame {
     gameView: GameView,
     timeoutRefresh?: number,
   ) {
-    this.gameField = gameField as GameField;
-    this.gameView = gameView as GameView;
+    this.gameField = gameField;
+    this.gameView = gameView;
     this.timeoutRefresh = timeoutRefresh;
     this.state = gameField.getState();
     gameView.updateGameField(gameField.getState());
 
-    const setSizeButton = this.gameView.element.querySelector("#setSize");
-    setSizeButton.addEventListener("click", () => {
-      this.gameView.onFieldSizeChange(
-        this.gameField.setSize.bind(this.gameField),
-      );
-      this.gameView.updateGameField(this.gameField.getState());
-    });
+    this.gameView.element
+      .querySelector("#setSize")
+      .addEventListener("click", () => {
+        this.gameView.onFieldSizeChange(
+          this.gameField.setSize.bind(this.gameField),
+        );
+        this.gameView.updateGameField(this.gameField.getState());
+      });
 
     const nextGenerationButton =
       this.gameView.element.querySelector("#nextGeneration");
     nextGenerationButton.addEventListener("click", () => {
-      switch (this.iteration % 2) {
-        case 0:
-          this.gameField.nextFaze1();
-          break;
-        case 1:
-          this.gameField.nextFaze2();
-          break;
-        default:
-          return;
-      }
+      this.gameField.nextGeneration(this.iteration);
       this.gameView.updateGameField(this.gameField.getState());
       this.iteration++;
       this.checkIsAllDeadCells();
